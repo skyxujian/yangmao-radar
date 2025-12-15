@@ -1,23 +1,19 @@
-// ===============================
-// 配置区：只需要改这里
-// ===============================
-
-// ⚠️ 换成你【最新部署】的 Apps Script Web App exec URL
 const API_URL = "https://script.google.com/macros/s/AKfycbzJs5IskLD44e6Aw6_a_9FoQxpCtfzx3DaNWH8PBB_vGMttLr80_lPXBF_zNtjVrC0S1w/exec";
 
-// ===============================
-// 提交报修
-// ===============================
+function getValue(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : "";
+}
 
 async function submitRepair(event) {
-  event.preventDefault();
+  if (event) event.preventDefault();
 
   const payload = {
-    department: document.getElementById("department").value.trim(),
-    title: document.getElementById("title").value.trim(),
-    description: document.getElementById("description").value.trim(),
-    contact: document.getElementById("contact").value.trim(),
-    remark: document.getElementById("remark").value.trim()
+    department: getValue("department"),
+    title: getValue("title"),
+    description: getValue("description"),
+    contact: getValue("contact"),
+    remark: getValue("remark")
   };
 
   if (!payload.title) {
@@ -28,7 +24,7 @@ async function submitRepair(event) {
   try {
     await fetch(API_URL, {
       method: "POST",
-      mode: "no-cors",           // ⭐ 关键：绕过 GAS 的 CORS
+      mode: "no-cors",
       body: JSON.stringify(payload)
     });
 
@@ -41,25 +37,9 @@ async function submitRepair(event) {
   }
 }
 
-// ===============================
-// 清空表单
-// ===============================
-
 function clearForm() {
-  document.getElementById("department").value = "";
-  document.getElementById("title").value = "";
-  document.getElementById("description").value = "";
-  document.getElementById("contact").value = "";
-  document.getElementById("remark").value = "";
+  ["department", "title", "description", "contact", "remark"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
 }
-
-// ===============================
-// 页面加载后绑定事件
-// ===============================
-
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("repairForm");
-  if (form) {
-    form.addEventListener("submit", submitRepair);
-  }
-});
