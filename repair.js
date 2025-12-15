@@ -3,7 +3,7 @@
  ***********************/
 
 // ★ 把这里换成你的 Apps Script Web App URL ★
-const API_URL = "https://script.google.com/macros/s/XXXX/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbztpmmEuwCp6Db6zcxUZYfiGIRENCuc8I_-cL3gyiHe9HOIrzwiaAgQZwyR45B7LzeQ9g/exec";
 
 function v(id) {
   const el = document.getElementById(id);
