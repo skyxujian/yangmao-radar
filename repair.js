@@ -3,7 +3,7 @@
 // ===============================
 
 // ⚠️ 换成你【最新部署】的 Apps Script Web App exec URL
-const API_URL = "https://script.google.com/macros/s/AKfycbXXXXXXXXXXXXXXXXXXXX/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzJs5IskLD44e6Aw6_a_9FoQxpCtfzx3DaNWH8PBB_vGMttLr80_lPXBF_zNtjVrC0S1w/exec";
 
 // ===============================
 // 提交报修
