@@ -1,9 +1,16 @@
-fetch("pdd_billion_subsidy.json")
+fetch("./pdd_billion_subsidy.json")
   .then(r => r.json())
   .then(data => {
     document.getElementById("content").innerHTML =
-      data.items.map(item => "<p>" + item.title + " - " + item.price + "</p>").join("");
+      data.items.map(item =>
+        `<p>
+          <a href="${item.link || '#'}" target="_blank">
+            ${item.title} - ${item.price}
+          </a>
+        </p>`
+      ).join("");
   })
   .catch(e => {
-    document.getElementById("content").innerHTML = "数据加载失败：" + e;
+    document.getElementById("content").innerHTML =
+      "数据加载失败：" + e;
   });
