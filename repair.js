@@ -28,11 +28,9 @@ async function submitTicket() {
 
   try {
     const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
+  method: "POST",
+  body: JSON.stringify(payload)   
+});
     const data = await res.json();
 
     if (data.ok) {
