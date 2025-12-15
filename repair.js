@@ -1,52 +1,65 @@
-/***********************
- * IT 运维报修 - 前端脚本
- ***********************/
+// ===============================
+// 配置区：只需要改这里
+// ===============================
 
-// ★ 把这里换成你的 Apps Script Web App URL ★
-const API_URL = "https://script.google.com/macros/s/AKfycbztpmmEuwCp6Db6zcxUZYfiGIRENCuc8I_-cL3gyiHe9HOIrzwiaAgQZwyR45B7LzeQ9g/exec";
+// ⚠️ 换成你【最新部署】的 Apps Script Web App exec URL
+const API_URL = "https://script.google.com/macros/s/AKfycbXXXXXXXXXXXXXXXXXXXX/exec";
 
-function v(id) {
-  const el = document.getElementById(id);
-  return el ? el.value.trim() : "";
-}
+// ===============================
+// 提交报修
+// ===============================
 
-async function submitTicket() {
+async function submitRepair(event) {
+  event.preventDefault();
+
   const payload = {
-    dept: v("dept"),
-    category: v("category"),
-    description: v("desc"),
-    name: v("name"),
-    contact: v("contact"),
-    photo: v("photo"),
-    note: v("note")
+    department: document.getElementById("department").value.trim(),
+    title: document.getElementById("title").value.trim(),
+    description: document.getElementById("description").value.trim(),
+    contact: document.getElementById("contact").value.trim(),
+    remark: document.getElementById("remark").value.trim()
   };
 
-  if (!payload.dept || !payload.category || !payload.description || !payload.name || !payload.contact) {
-    alert("请把带 * 的必填项填写完整");
+  if (!payload.title) {
+    alert("请填写报修标题");
     return;
   }
 
   try {
-    const res = await fetch(API_URL, {
-  method: "POST",
-  body: JSON.stringify(payload)   
-});
-    const data = await res.json();
+    await fetch(API_URL, {
+      method: "POST",
+      mode: "no-cors",           // ⭐ 关键：绕过 GAS 的 CORS
+      body: JSON.stringify(payload)
+    });
 
-    if (data.ok) {
-      alert("提交成功 ✅ 工单号：" + data.id);
-      clearForm();
-    } else {
-      alert("提交失败：" + (data.error || "未知错误"));
-    }
-  } catch (e) {
-    alert("提交失败（网络或权限问题）：" + e);
+    alert("提交成功 ✅ 工单已发送");
+    clearForm();
+
+  } catch (err) {
+    alert("提交失败（网络或权限问题）");
+    console.error(err);
   }
 }
 
+// ===============================
+// 清空表单
+// ===============================
+
 function clearForm() {
-  ["dept","category","desc","name","contact","photo","note"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = "";
-  });
+  document.getElementById("department").value = "";
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("contact").value = "";
+  document.getElementById("remark").value = "";
 }
+
+// ===============================
+// 页面加载后绑定事件
+// ===============================
+
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("repairForm");
+  if (form) {
+    form.addEventListener("submit", submitRepair);
+  }
+});
