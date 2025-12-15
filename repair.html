@@ -1,54 +1,75 @@
-/***********************
- * IT 运维报修 - 前端脚本
- ***********************/
-
-// ★ 把这里换成你的 Apps Script Web App URL ★
-const API_URL = "https://script.google.com/macros/s/XXXX/exec";
-
-function v(id) {
-  const el = document.getElementById(id);
-  return el ? el.value.trim() : "";
-}
-
-async function submitTicket() {
-  const payload = {
-    dept: v("dept"),
-    category: v("category"),
-    description: v("desc"),
-    name: v("name"),
-    contact: v("contact"),
-    photo: v("photo"),
-    note: v("note")
-  };
-
-  if (!payload.dept || !payload.category || !payload.description || !payload.name || !payload.contact) {
-    alert("请把带 * 的必填项填写完整");
-    return;
-  }
-
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (data.ok) {
-      alert("提交成功 ✅ 工单号：" + data.id);
-      clearForm();
-    } else {
-      alert("提交失败：" + (data.error || "未知错误"));
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <title>IT 运维报修</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; background:#f5f6fa; margin:0; padding:16px; }
+    .box { max-width:720px; margin:0 auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,.08); }
+    h2 { margin-top:0; }
+    label { display:block; margin-top:14px; font-weight:600; }
+    input, select, textarea {
+      width:100%; padding:10px; margin-top:6px;
+      border-radius:8px; border:1px solid #ccc; font-size:14px;
     }
-  } catch (e) {
-    alert("提交失败（网络或权限问题）：" + e);
-  }
-}
+    textarea { min-height:100px; }
+    button {
+      margin-top:18px; width:100%; padding:12px;
+      border:none; border-radius:10px; background:#111;
+      color:#fff; font-size:16px; cursor:pointer;
+    }
+    .hint { font-size:12px; color:#666; margin-top:6px; }
+  </style>
+</head>
+<body>
 
-function clearForm() {
-  ["dept","category","desc","name","contact","photo","note"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = "";
-  });
-}
+<div class="box">
+  <h2>IT 运维报修</h2>
+  <p class="hint">无需安装 App，填写后直接提交。</p>
+
+  <label>报修部门 *</label>
+  <select id="dept">
+    <option value="">请选择</option>
+    <option>行政部</option>
+    <option>财务部</option>
+    <option>人事部</option>
+    <option>教务处</option>
+    <option>信息中心</option>
+    <option>销售部</option>
+    <option>仓库</option>
+    <option>其他</option>
+  </select>
+
+  <label>问题类型 *</label>
+  <select id="category">
+    <option value="">请选择</option>
+    <option>网络问题</option>
+    <option>电脑 / 笔记本</option>
+    <option>打印机 / 外设</option>
+    <option>软件系统</option>
+    <option>权限 / 账号</option>
+    <option>其他</option>
+  </select>
+
+  <label>问题描述 *</label>
+  <textarea id="desc" placeholder="例如：无法上网，网线已插好，上午还能用"></textarea>
+
+  <label>联系人 *</label>
+  <input id="name" placeholder="姓名">
+
+  <label>联系方式 *</label>
+  <input id="contact" placeholder="手机号 / 微信">
+
+  <label>照片链接（可选）</label>
+  <input id="photo" placeholder="图片链接">
+
+  <label>备注（可选）</label>
+  <textarea id="note" placeholder="例如：下午 2 点后有人"></textarea>
+
+  <button onclick="submitTicket()">提交报修</button>
+</div>
+
+<script src="repair.js"></script>
+</body>
+</html>
