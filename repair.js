@@ -1,6 +1,6 @@
 // ====== 必须配置 ======
 const API_URL =
-  "https://script.google.com/macros/s/你的AppsScriptWebAppURL/exec";
+  "https://https://script.google.com/macros/s/AKfycbxRQjLeT4szkFhO7UwhuF5vFKvdBtLdAgn2MgV7cSdhs1FNtmOUC4tccqZ6jKwdRuvk8A/exec";
 // ====================
 
 if (!API_URL || !API_URL.startsWith("https://script.google.com")) {
