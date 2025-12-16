@@ -1,5 +1,5 @@
 // ====== 配置区（必填） ======
-const API_URL = "https://script.google.com/macros/s/AKfycbxpabEI5sYP4ioK9Eis-VBreZxsrUXx9pnQsymDc6EXTdUth74M8r6pRFSe5EV1I247-A/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbw7NeL2bZWq8zAluSeMrl8HfPFF6NX5dqzXd0-CY8-yrVXBOoQlMTDTOwq9-STt_0iQBA/exec";
 
 // ====== 主逻辑 ======
 document.addEventListener("DOMContentLoaded", () => {
