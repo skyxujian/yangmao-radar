@@ -47,10 +47,13 @@ async function submitTicket() {
 
   try {
     const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify(payload)
+});
+
 
     const result = await res.json();
     console.log("接口返回：", result);
