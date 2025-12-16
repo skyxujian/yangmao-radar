@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzJs5IskLD44e6Aw6_a_9FoQxpCtfzx3DaNWH8PBB_vGMttLr80_lPXBF_zNtjVrC0S1w/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxxUrhROL0FQ_D9x7Lq-3_w16XzU_MCh-46QFw4DOskkGvQQl6s9gatbGNLC4XzDd34nA/exec";
 
 function getValue(id) {
   const el = document.getElementById(id);
