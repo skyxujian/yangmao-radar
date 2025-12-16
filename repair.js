@@ -1,6 +1,6 @@
 // ====== 必须配置 ======
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbxSEQY284Sxk8eQcFn5qhGuizih-J9W-8JdufFQUN64oz7FnRrHnFxoUgjXxqekRq40Lg/exec";
+  "https://script.google.com/macros/s/AKfycbxpabEI5sYP4ioK9Eis-VBreZxsrUXx9pnQsymDc6EXTdUth74M8r6pRFSe5EV1I247-A/exec";
 // ====================
 
 if (!API_URL || !API_URL.startsWith("https://script.google.com")) {
