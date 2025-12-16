@@ -1,308 +1,239 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IT 运维支持系统 · 报修入口</title>
+  <title>IT 运维支持系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-    :root{
-      --bg:#f3f6fb;
-      --card:#ffffff;
-      --text:#0f172a;
-      --muted:#64748b;
-      --line:#e5e7eb;
-      --primary:#2563eb;
-      --primary2:#1d4ed8;
-      --danger:#dc2626;
-      --ok:#16a34a;
-      --shadow: 0 18px 50px rgba(15,23,42,.10);
-      --radius: 14px;
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #eef3fb, #f8fafc);
+      color: #1f2937;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:
-        radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.15), transparent 60%),
-        radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,.10), transparent 55%),
-        var(--bg);
-      color:var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-    }
-    .wrap{
+
+    .container {
       max-width: 860px;
-      margin: 52px auto;
-      padding: 0 18px;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    .topbar{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:12px;
-    }
-    .brand{
-      display:flex;flex-direction:column;gap:6px;
-    }
-    .brand h1{
-      margin:0;
-      font-size:22px;
-      letter-spacing:.2px;
-    }
-    .brand p{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
-    }
-    .pill{
-      font-size:12px;
-      color:#0b1220;
-      background: rgba(37,99,235,.10);
-      border: 1px solid rgba(37,99,235,.20);
-      padding: 6px 10px;
-      border-radius: 999px;
-      white-space:nowrap;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid rgba(148,163,184,.35);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .card-hd{
-      padding: 18px 20px;
-      border-bottom: 1px solid rgba(148,163,184,.25);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      background:
-        linear-gradient(to right, rgba(37,99,235,.08), transparent 55%);
-    }
-    .card-hd .title{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-    .card-hd .title strong{
-      font-size:15px;
-      letter-spacing:.2px;
-    }
-    .card-hd .title span{
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    .card-bd{
-      padding: 18px 20px 20px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px 14px;
-    }
-    @media (max-width: 760px){
-      .grid{grid-template-columns: 1fr;}
-      .topbar{align-items:flex-start; flex-direction:column;}
-    }
-
-    label{
-      display:block;
-      font-size:12px;
-      color:#111827;
-      margin-bottom:6px;
-      font-weight:600;
-    }
-    .req::after{
-      content:" *";
-      color:var(--danger);
-      font-weight:700;
-    }
-
-    input, select, textarea{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius: 10px;
-      padding: 11px 12px;
-      outline:none;
-      font-size:14px;
-      background:#fff;
-      transition: border-color .15s, box-shadow .15s;
-    }
-    textarea{min-height: 104px; resize: vertical}
-    input:focus, select:focus, textarea:focus{
-      border-color: rgba(37,99,235,.55);
-      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
-    }
-    .hint{
-      margin-top:6px;
-      font-size:12px;
-      color:var(--muted);
-    }
-
-    .bar{
-      display:none;
-      margin: 0 0 14px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid rgba(148,163,184,.35);
-      background: rgba(148,163,184,.10);
-      color:#0b1220;
-      font-size:13px;
-      line-height: 1.35;
-      white-space: pre-wrap;
-    }
-    .bar.ok{
-      border-color: rgba(22,163,74,.30);
-      background: rgba(22,163,74,.10);
-      color:#064e3b;
-    }
-    .bar.err{
-      border-color: rgba(220,38,38,.30);
-      background: rgba(220,38,38,.10);
-      color:#7f1d1d;
-    }
-
-    .actions{
-      margin-top: 16px;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-    }
-    .btn{
-      border:none;
-      cursor:pointer;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size:14px;
-      font-weight:700;
-      letter-spacing:.2px;
-      transition: transform .05s ease, background .15s ease, box-shadow .15s ease, opacity .15s ease;
-    }
-    .btn-primary{
-      background: linear-gradient(180deg, rgba(37,99,235,1), rgba(29,78,216,1));
-      color:#fff;
-      box-shadow: 0 10px 24px rgba(37,99,235,.22);
-      min-width: 220px;
-    }
-    .btn-primary:hover{opacity:.98}
-    .btn-primary:active{transform: translateY(1px)}
-    .btn-ghost{
+      margin: 40px auto;
       background: #fff;
-      color:#0f172a;
-      border:1px solid var(--line);
-      font-weight:600;
-    }
-    .btn[disabled]{opacity:.55; cursor:not-allowed}
-
-    .foot{
-      text-align:center;
-      color: var(--muted);
-      font-size:12px;
-      padding: 10px 0 0;
+      border-radius: 14px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      padding: 36px 42px;
     }
 
-    .kpi{
-      display:flex; gap:10px; align-items:center;
-      color: var(--muted);
-      font-size:12px;
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 700;
     }
-    .dot{
-      width:8px; height:8px; border-radius:50%;
-      background: rgba(37,99,235,.60);
-      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+
+    .subtitle {
+      margin-top: 6px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .alert {
+      margin: 22px 0;
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: #fff1f1;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      font-size: 14px;
+      display: none;
+    }
+
+    .form-grid {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .required {
+      color: #ef4444;
+      margin-left: 4px;
+    }
+
+    input,
+    select,
+    textarea {
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .actions {
+      margin-top: 34px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 26px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(37, 99, 235, 0.45);
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 26px;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    @media (max-width: 720px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <h1>IT 运维支持系统</h1>
-        <p>内部报修入口 · 提交后自动生成工单并写入后台表格</p>
-      </div>
-      <div class="pill">Repair Portal</div>
+  <div class="container">
+    <h1>IT 运维支持系统</h1>
+    <div class="subtitle">内部报修入口 · 提交后自动生成工单</div>
+
+    <div class="alert" id="apiAlert">
+      ⚠️ 请先在 <strong>repair.js</strong> 中配置 API_URL（Apps Script 的 Web App URL）
     </div>
 
-    <div class="card">
-      <div class="card-hd">
-        <div class="title">
-          <strong>提交报修工单</strong>
-          <span>请尽量填写完整，方便快速定位与处理</span>
-        </div>
-        <div class="kpi"><span class="dot"></span><span id="netStatus">接口待验证</span></div>
+    <div class="form-grid">
+      <!-- 报修部门 -->
+      <div class="form-group">
+        <label>报修部门<span class="required">*</span></label>
+        <select id="departmentSelect" onchange="toggleDeptInput()">
+          <option value="">请选择部门</option>
+          <option>IT部</option>
+          <option>行政</option>
+          <option>总务</option>
+          <option>后勤</option>
+          <option>基建</option>
+          <option>教务处</option>
+          <option>财务部</option>
+          <option>商务部</option>
+          <option>销售部</option>
+          <option>人事部</option>
+          <option value="其他">其他（手动填写）</option>
+        </select>
+
+        <input
+          id="departmentInput"
+          type="text"
+          placeholder="请输入部门名称"
+          style="display: none; margin-top: 8px;"
+        />
       </div>
 
-      <div class="card-bd">
-        <div id="msgBar" class="bar"></div>
+      <!-- 问题类型 -->
+      <div class="form-group">
+        <label>问题类型<span class="required">*</span></label>
+        <select id="category">
+          <option value="">请选择</option>
+          <option>系统</option>
+          <option>网络</option>
+          <option>硬件</option>
+          <option>账号权限</option>
+          <option>其他</option>
+        </select>
+      </div>
 
-        <form id="repairForm">
-          <div class="grid">
-            <div>
-              <label class="req" for="department">报修部门</label>
-              <input id="department" placeholder="如：财务部 / IT部" required />
-              <div class="hint">建议写清楚部门/门店，方便派单</div>
-            </div>
+      <!-- 问题标题 -->
+      <div class="form-group full">
+        <label>问题标题<span class="required">*</span></label>
+        <input id="title" type="text" placeholder="简要描述问题" />
+      </div>
 
-            <div>
-              <label class="req" for="type">问题类型</label>
-              <select id="type" required>
-                <option value="">请选择</option>
-                <option value="网络">网络</option>
-                <option value="电脑">电脑</option>
-                <option value="系统">系统</option>
-                <option value="打印/外设">打印/外设</option>
-                <option value="账号/权限">账号/权限</option>
-                <option value="其他">其他</option>
-              </select>
-              <div class="hint">按类别统计与优先级更清晰</div>
-            </div>
+      <!-- 问题描述 -->
+      <div class="form-group full">
+        <label>问题描述</label>
+        <textarea id="description" placeholder="请详细描述问题现象"></textarea>
+      </div>
 
-            <div style="grid-column: 1 / -1;">
-              <label class="req" for="title">问题标题</label>
-              <input id="title" placeholder="简要描述问题（例：电脑无法开机 / 网络断连）" required />
-            </div>
+      <!-- 联系方式 -->
+      <div class="form-group">
+        <label>联系方式<span class="required">*</span></label>
+        <input id="contact" type="text" placeholder="姓名 / 电话 / 微信" />
+      </div>
 
-            <div style="grid-column: 1 / -1;">
-              <label for="description">问题描述</label>
-              <textarea id="description" placeholder="请详细描述问题现象、发生时间、是否影响业务等"></textarea>
-            </div>
-
-            <div>
-              <label class="req" for="contact">联系方式</label>
-              <input id="contact" placeholder="姓名 / 电话 / 微信" required />
-            </div>
-
-            <div>
-              <label for="remark">备注</label>
-              <input id="remark" placeholder="如：可上门时间 / 现场联系人" />
-            </div>
-
-            <div style="grid-column: 1 / -1;">
-              <label for="remark2">附加备注</label>
-              <input id="remark2" placeholder="可选：补充信息（例如设备编号/工位号/截图说明）" />
-            </div>
-          </div>
-
-          <div class="actions">
-            <button id="submitBtn" type="submit" class="btn btn-primary">提交工单</button>
-            <button type="button" class="btn btn-ghost" onclick="resetForm()">清空重填</button>
-          </div>
-
-          <div class="foot">© IT 运维系统 · 内部使用</div>
-        </form>
+      <!-- 备注 -->
+      <div class="form-group">
+        <label>备注</label>
+        <input id="remark" type="text" placeholder="如：下午两点后方便" />
       </div>
     </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" onclick="submitTicket(event)">
+        提交工单
+      </button>
+      <button class="btn btn-secondary" onclick="resetForm()">
+        清空重填
+      </button>
+    </div>
+
+    <footer>© IT 运维系统 · 内部使用</footer>
   </div>
 
-  <script src="repair.js"></script>
+  <script src="./repair.js"></script>
 </body>
 </html>
