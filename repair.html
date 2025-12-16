@@ -1,137 +1,305 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>IT 运维报修系统</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT 运维支持系统 · 报修入口</title>
 
   <style>
-    body {
-      margin: 0;
-      background: #f5f7fa;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-      color: #333;
+    :root{
+      --bg:#f3f6fb;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --primary:#2563eb;
+      --primary2:#1d4ed8;
+      --danger:#dc2626;
+      --ok:#16a34a;
+      --shadow: 0 18px 50px rgba(15,23,42,.10);
+      --radius: 14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.15), transparent 60%),
+        radial-gradient(900px 500px at 80% 0%, rgba(16,185,129,.10), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .wrap{
+      max-width: 860px;
+      margin: 52px auto;
+      padding: 0 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .topbar{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill{
+      font-size:12px;
+      color:#0b1220;
+      background: rgba(37,99,235,.10);
+      border: 1px solid rgba(37,99,235,.20);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space:nowrap;
     }
 
-    .container {
-      max-width: 620px;
-      margin: 60px auto;
-      background: #fff;
-      padding: 32px 36px;
-      border-radius: 8px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    .card{
+      background:var(--card);
+      border:1px solid rgba(148,163,184,.35);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card-hd{
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(148,163,184,.25);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:
+        linear-gradient(to right, rgba(37,99,235,.08), transparent 55%);
+    }
+    .card-hd .title{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .card-hd .title strong{
+      font-size:15px;
+      letter-spacing:.2px;
+    }
+    .card-hd .title span{
+      color:var(--muted);
+      font-size:12px;
     }
 
-    h1 {
-      margin: 0 0 24px;
-      font-size: 22px;
-      font-weight: 600;
-      color: #1f2d3d;
-      text-align: center;
+    .card-bd{
+      padding: 18px 20px 20px;
     }
 
-    .form-group {
-      margin-bottom: 18px;
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 14px;
+    }
+    @media (max-width: 760px){
+      .grid{grid-template-columns: 1fr;}
+      .topbar{align-items:flex-start; flex-direction:column;}
     }
 
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 14px;
-      font-weight: 500;
+    label{
+      display:block;
+      font-size:12px;
+      color:#111827;
+      margin-bottom:6px;
+      font-weight:600;
+    }
+    .req::after{
+      content:" *";
+      color:var(--danger);
+      font-weight:700;
     }
 
-    input,
-    textarea,
-    select {
-      width: 100%;
+    input, select, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 12px;
+      outline:none;
+      font-size:14px;
+      background:#fff;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    textarea{min-height: 104px; resize: vertical}
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(37,99,235,.55);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+    .hint{
+      margin-top:6px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .bar{
+      display:none;
+      margin: 0 0 14px;
       padding: 10px 12px;
-      font-size: 14px;
-      border: 1px solid #dcdfe6;
-      border-radius: 4px;
-      box-sizing: border-box;
-      transition: border-color 0.2s;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,.35);
+      background: rgba(148,163,184,.10);
+      color:#0b1220;
+      font-size:13px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+    }
+    .bar.ok{
+      border-color: rgba(22,163,74,.30);
+      background: rgba(22,163,74,.10);
+      color:#064e3b;
+    }
+    .bar.err{
+      border-color: rgba(220,38,38,.30);
+      background: rgba(220,38,38,.10);
+      color:#7f1d1d;
     }
 
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: #409eff;
-      outline: none;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 90px;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 12px;
-      font-size: 15px;
-      background: #409eff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .btn:hover {
-      background: #337ecc;
-    }
-
-    .footer {
+    .actions{
       margin-top: 16px;
-      text-align: center;
-      font-size: 12px;
-      color: #999;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size:14px;
+      font-weight:700;
+      letter-spacing:.2px;
+      transition: transform .05s ease, background .15s ease, box-shadow .15s ease, opacity .15s ease;
+    }
+    .btn-primary{
+      background: linear-gradient(180deg, rgba(37,99,235,1), rgba(29,78,216,1));
+      color:#fff;
+      box-shadow: 0 10px 24px rgba(37,99,235,.22);
+      min-width: 220px;
+    }
+    .btn-primary:hover{opacity:.98}
+    .btn-primary:active{transform: translateY(1px)}
+    .btn-ghost{
+      background: #fff;
+      color:#0f172a;
+      border:1px solid var(--line);
+      font-weight:600;
+    }
+    .btn[disabled]{opacity:.55; cursor:not-allowed}
+
+    .foot{
+      text-align:center;
+      color: var(--muted);
+      font-size:12px;
+      padding: 10px 0 0;
+    }
+
+    .kpi{
+      display:flex; gap:10px; align-items:center;
+      color: var(--muted);
+      font-size:12px;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: rgba(37,99,235,.60);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>IT 运维报修</h1>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <h1>IT 运维支持系统</h1>
+        <p>内部报修入口 · 提交后自动生成工单并写入后台表格</p>
+      </div>
+      <div class="pill">Repair Portal</div>
+    </div>
 
-    <form onsubmit="submitRepair(event)">
-      <div class="form-group">
-        <label>报修部门</label>
-        <input id="department" placeholder="如：财务部 / IT部" required />
+    <div class="card">
+      <div class="card-hd">
+        <div class="title">
+          <strong>提交报修工单</strong>
+          <span>请尽量填写完整，方便快速定位与处理</span>
+        </div>
+        <div class="kpi"><span class="dot"></span><span id="netStatus">接口待验证</span></div>
       </div>
 
-      <div class="form-group">
-        <label>问题类型</label>
-        <select id="type" required>
-          <option value="">请选择</option>
-          <option value="网络">网络</option>
-          <option value="电脑">电脑</option>
-          <option value="系统">系统</option>
-          <option value="其他">其他</option>
-        </select>
+      <div class="card-bd">
+        <div id="msgBar" class="bar"></div>
+
+        <form id="repairForm">
+          <div class="grid">
+            <div>
+              <label class="req" for="department">报修部门</label>
+              <input id="department" placeholder="如：财务部 / IT部" required />
+              <div class="hint">建议写清楚部门/门店，方便派单</div>
+            </div>
+
+            <div>
+              <label class="req" for="type">问题类型</label>
+              <select id="type" required>
+                <option value="">请选择</option>
+                <option value="网络">网络</option>
+                <option value="电脑">电脑</option>
+                <option value="系统">系统</option>
+                <option value="打印/外设">打印/外设</option>
+                <option value="账号/权限">账号/权限</option>
+                <option value="其他">其他</option>
+              </select>
+              <div class="hint">按类别统计与优先级更清晰</div>
+            </div>
+
+            <div style="grid-column: 1 / -1;">
+              <label class="req" for="title">问题标题</label>
+              <input id="title" placeholder="简要描述问题（例：电脑无法开机 / 网络断连）" required />
+            </div>
+
+            <div style="grid-column: 1 / -1;">
+              <label for="description">问题描述</label>
+              <textarea id="description" placeholder="请详细描述问题现象、发生时间、是否影响业务等"></textarea>
+            </div>
+
+            <div>
+              <label class="req" for="contact">联系方式</label>
+              <input id="contact" placeholder="姓名 / 电话 / 微信" required />
+            </div>
+
+            <div>
+              <label for="remark">备注</label>
+              <input id="remark" placeholder="如：可上门时间 / 现场联系人" />
+            </div>
+
+            <div style="grid-column: 1 / -1;">
+              <label for="remark2">附加备注</label>
+              <input id="remark2" placeholder="可选：补充信息（例如设备编号/工位号/截图说明）" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="submitBtn" type="submit" class="btn btn-primary">提交工单</button>
+            <button type="button" class="btn btn-ghost" onclick="resetForm()">清空重填</button>
+          </div>
+
+          <div class="foot">© IT 运维系统 · 内部使用</div>
+        </form>
       </div>
-
-      <div class="form-group">
-        <label>问题标题</label>
-        <input id="title" placeholder="简要描述问题" required />
-      </div>
-
-      <div class="form-group">
-        <label>问题描述</label>
-        <textarea id="description" placeholder="请详细描述问题现象"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>联系方式</label>
-        <input id="contact" placeholder="姓名 / 电话 / 微信" required />
-      </div>
-
-      <button class="btn" type="submit">提交报修</button>
-    </form>
-
-    <div class="footer">
-      © IT 运维系统 · 内部使用
     </div>
   </div>
 
