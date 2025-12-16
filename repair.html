@@ -1,84 +1,140 @@
-<!doctype html>
-<html lang="zh">
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <title>IT 运维报修</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>IT 运维报修系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
-    body { font-family: Arial, Helvetica, sans-serif; background:#f5f6fa; margin:0; padding:16px; }
-    .box { max-width:720px; margin:0 auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,.08); }
-    h2 { margin-top:0; }
-    label { display:block; margin-top:14px; font-weight:600; }
-    input, select, textarea {
-      width:100%; padding:10px; margin-top:6px;
-      border-radius:8px; border:1px solid #ccc; font-size:14px;
+    body {
+      margin: 0;
+      background: #f5f7fa;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: #333;
     }
-    textarea { min-height:100px; }
-    button {
-      margin-top:18px; width:100%; padding:12px;
-      border:none; border-radius:10px; background:#111;
-      color:#fff; font-size:16px; cursor:pointer;
+
+    .container {
+      max-width: 620px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 32px 36px;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     }
-    .hint { font-size:12px; color:#666; margin-top:6px; }
+
+    h1 {
+      margin: 0 0 24px;
+      font-size: 22px;
+      font-weight: 600;
+      color: #1f2d3d;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #409eff;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      background: #409eff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: #337ecc;
+    }
+
+    .footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+    }
   </style>
 </head>
+
 <body>
+  <div class="container">
+    <h1>IT 运维报修</h1>
 
-<div class="box">
-  <h2>IT 运维报修</h2>
-  <p class="hint">无需安装 App，填写后直接提交。</p>
+    <form onsubmit="submitRepair(event)">
+      <div class="form-group">
+        <label>报修部门</label>
+        <input id="department" placeholder="如：财务部 / IT部" required />
+      </div>
 
-  <label>报修部门 *</label>
-  <select id="dept">
-    <option value="">请选择</option>
-    <option>行政部</option>
-    <option>财务部</option>
-    <option>人事部</option>
-    <option>教务处</option>
-    <option>信息中心</option>
-    <option>销售部</option>
-    <option>仓库</option>
-    <option>其他</option>
-  </select>
+      <div class="form-group">
+        <label>问题类型</label>
+        <select id="type" required>
+          <option value="">请选择</option>
+          <option value="网络">网络</option>
+          <option value="电脑">电脑</option>
+          <option value="系统">系统</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
 
-  <label>问题类型 *</label>
-  <select id="category">
-    <option value="">请选择</option>
-    <option>网络问题</option>
-    <option>电脑 / 笔记本</option>
-    <option>打印机 / 外设</option>
-    <option>软件系统</option>
-    <option>权限 / 账号</option>
-    <option>其他</option>
-  </select>
+      <div class="form-group">
+        <label>问题标题</label>
+        <input id="title" placeholder="简要描述问题" required />
+      </div>
 
-  <label>问题描述 *</label>
-  <textarea id="desc" placeholder="例如：无法上网，网线已插好，上午还能用"></textarea>
+      <div class="form-group">
+        <label>问题描述</label>
+        <textarea id="description" placeholder="请详细描述问题现象"></textarea>
+      </div>
 
-  <label>联系人 *</label>
-  <input id="name" placeholder="姓名">
+      <div class="form-group">
+        <label>联系方式</label>
+        <input id="contact" placeholder="姓名 / 电话 / 微信" required />
+      </div>
 
-  <label>联系方式 *</label>
-  <input id="contact" placeholder="手机号 / 微信">
+      <button class="btn" type="submit">提交报修</button>
+    </form>
 
-  <label>照片链接（可选）</label>
-  <input id="photo" placeholder="图片链接">
+    <div class="footer">
+      © IT 运维系统 · 内部使用
+    </div>
+  </div>
 
-  <label>备注（可选）</label>
-  <textarea id="note" placeholder="例如：下午 2 点后有人"></textarea>
-<div style="margin-bottom:12px;">
-  <label>报修标题（必填）</label><br>
-  <input
-    id="title"
-    type="text"
-    placeholder="例如：打印机无法使用"
-    style="width: 100%; padding: 8px;"
-  />
-</div>
-
-  <button onclick="submitRepair()">提交报修</button>
-</div>
-
-<script src="repair.js"></script>
+  <script src="repair.js"></script>
 </body>
 </html>
