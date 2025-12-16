@@ -20,7 +20,60 @@ function toggleDeptInput() {
   }
 }
 async function submitTicket(e) {
-  e.preventDefault();
+  e.preventDefault(); // 🔥 非常重要：阻止浏览器默认提交
+
+  console.log("submitTicket 触发");
+
+  const btn = document.getElementById("submitBtn");
+  if (!btn) {
+    alert("提交按钮未找到");
+    return;
+  }
+
+  btn.disabled = true;
+  const oldText = btn.innerText;
+  btn.innerText = "提交中...";
+
+  try {
+    const data = {
+      department: document.getElementById("department").value.trim(),
+      category: document.getElementById("category").value,
+      title: document.getElementById("title").value.trim(),
+      description: document.getElementById("description").value.trim(),
+      contact: document.getElementById("contact").value.trim(),
+      remark: document.getElementById("remark").value.trim()
+    };
+
+    if (!data.department || !data.category || !data.title || !data.contact) {
+      alert("请填写所有必填项");
+      return;
+    }
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      throw new Error("网络或权限错误");
+    }
+
+    const result = await res.json();
+    if (result.ok) {
+      alert("✅ 提交成功，工单已发送");
+      document.getElementById("repairForm").reset();
+    } else {
+      throw new Error(result.error || "提交失败");
+    }
+
+  } catch (err) {
+    alert("❌ 提交失败：" + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerText = oldText;
+  }
+}
 
   const submitBtn = document.querySelector(".btn-primary");
 
@@ -120,3 +173,12 @@ function resetForm() {
   });
   document.getElementById("departmentInput").style.display = "none";
 }
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("repairForm");
+  if (!form) {
+    console.error("❌ 找不到 repairForm");
+    return;
+  }
+
+  form.addEventListener("submit", submitTicket);
+});
