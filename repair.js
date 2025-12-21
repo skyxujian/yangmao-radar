@@ -186,3 +186,43 @@ async function submitTicket(e) {
     setLoading(false);
   }
 }
+// ====== 科室下拉菜单加载（极简防呆版） ======
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadDepartments();
+});
+
+function loadDepartments() {
+  const select = document.getElementById("department");
+
+  if (!select) {
+    console.error("未找到 department 下拉框");
+    return;
+  }
+
+  // 你的 Apps Script Web App URL（确认是 /exec 结尾）
+  const API_URL = "https://script.google.com/macros/s/AKfycbxgu-wxwwmzM2brR8MX4IV_2Pq7QV2I-8IaiWNFV9WpPfVnd3hUjsfoxZkBvEeseU6ABw/exec";
+
+  fetch(API_URL + "?action=getDepartments")
+    .then(res => res.json())
+    .then(json => {
+      if (!json.ok || !Array.isArray(json.data)) {
+        alert("无法加载部门列表，请联系 IT");
+        return;
+      }
+
+      // 清空原有选项
+      select.innerHTML = '<option value="">请选择部门</option>';
+
+      json.data.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        select.appendChild(opt);
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      alert("无法加载部门列表，请联系 IT");
+    });
+}
