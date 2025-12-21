@@ -2,177 +2,219 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>IT 运维支持系统</title>
+  <title>IT 运维报修</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-      background: #f2f5fb;
+      font-family: "Microsoft YaHei", Arial, sans-serif;
+      background: #f5f7fa;
       margin: 0;
-      padding: 40px;
+      padding: 0;
     }
 
-    .card {
+    .container {
       max-width: 900px;
-      margin: auto;
-      background: #fff;
-      border-radius: 12px;
-      padding: 32px 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      margin: 30px auto;
+      background: #ffffff;
+      padding: 25px 30px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
     h1 {
       margin-top: 0;
-      font-size: 26px;
+      font-size: 22px;
+      border-left: 4px solid #3a7afe;
+      padding-left: 10px;
     }
 
     .desc {
+      font-size: 13px;
       color: #666;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .row {
       display: flex;
       gap: 20px;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
     }
 
-    .group {
+    .form-group {
       flex: 1;
-      display: flex;
-      flex-direction: column;
     }
 
     label {
+      display: block;
       font-size: 14px;
       margin-bottom: 6px;
+      font-weight: bold;
     }
 
-    label span {
-      color: #e53935;
+    .req {
+      color: red;
+      margin-left: 3px;
     }
 
-    input,
     select,
+    input,
     textarea {
-      padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #dcdfe6;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
       font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
     textarea {
       resize: vertical;
-      min-height: 100px;
+      min-height: 90px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
     }
 
     .actions {
-      margin-top: 30px;
+      margin-top: 25px;
       display: flex;
-      gap: 16px;
+      gap: 15px;
     }
 
     button {
-      padding: 12px 28px;
-      border-radius: 24px;
-      border: none;
-      font-size: 15px;
+      padding: 10px 22px;
+      font-size: 14px;
+      border-radius: 4px;
       cursor: pointer;
+      border: none;
     }
 
-    .primary {
-      background: linear-gradient(135deg, #4f7cff, #2f54eb);
+    #btnSubmit {
+      background-color: #3a7afe;
       color: #fff;
     }
 
-    .secondary {
-      background: #f0f2f5;
-      color: #333;
+    #btnSubmit:disabled {
+      background-color: #a0b8ff;
+      cursor: not-allowed;
     }
 
-    footer {
+    .btn-reset {
+      background-color: #e0e0e0;
+    }
+
+    .footer {
+      margin-top: 25px;
+      font-size: 12px;
+      color: #888;
       text-align: center;
-      margin-top: 30px;
-      color: #999;
-      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
-  <div class="card">
-    <h1>IT 运维支持系统</h1>
-    <div class="desc">内部报修入口 · 提交后自动生成工单</div>
 
-    <div class="row">
-      <div class="group">
-        <label>楼栋 <span class="req">*</span></label>
-<select id="building" required>
-  <option value="">请选择楼栋</option>
-</select>
-<label>科室 <span class="req">*</span></label>
-<select id="department" required>
-  <option value="">请选择科室</option>
-</select>
+  <div class="container">
+    <h1>IT 运维报修</h1>
+    <div class="desc">
+      电话占线或不方便通话时，请通过本页面提交报修，工单将自动记录。
+    </div>
 
-        <label>报修部门 <span>*</span></label>
-        <select id="department">
-          <option value="">请选择部门</option>
-          <option>行政</option>
-          <option>总务</option>
-          <option>后勤</option>
-          <option>基建</option>
-          <option>教务处</option>
-          <option>销售部</option>
-          <option>IT 部</option>
-        </select>
+    <form id="repairForm">
+
+      <!-- 楼栋 / 科室 -->
+      <div class="row">
+        <div class="form-group">
+          <label>楼栋<span class="req">*</span></label>
+          <select id="building">
+            <option value="">请选择楼栋</option>
+          </select>
+          <div class="hint">请选择所在大楼</div>
+        </div>
+
+        <div class="form-group">
+          <label>科室<span class="req">*</span></label>
+          <select id="department">
+            <option value="">请选择科室</option>
+          </select>
+          <div class="hint">根据楼栋自动加载</div>
+        </div>
       </div>
 
-      <div class="group">
-        <label>问题类型 <span>*</span></label>
-        <select id="type">
-          <option value="">请选择</option>
-          <option>系统</option>
-          <option>网络</option>
-          <option>硬件</option>
-          <option>权限</option>
-          <option>其他</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="group">
-      <label>问题标题 <span>*</span></label>
-      <input id="title" placeholder="简要描述问题" />
-    </div>
-
-    <div class="group">
-      <label>问题描述 <span>*</span></label>
-      <textarea id="description" placeholder="请详细描述问题现象和报修具体地点"></textarea>
-    </div>
-
-    <div class="row">
-      <div class="group">
-        <label>联系方式 <span>*</span></label>
-        <input id="contact" placeholder="姓名 / 电话 / 微信" />
+      <!-- 问题类型 -->
+      <div class="row">
+        <div class="form-group">
+          <label>问题类型<span class="req">*</span></label>
+          <select id="category">
+            <option value="">请选择</option>
+            <option value="系统">系统</option>
+            <option value="网络">网络</option>
+            <option value="电脑/终端">电脑/终端</option>
+            <option value="打印/外设">打印/外设</option>
+            <option value="账号权限">账号权限</option>
+            <option value="其他">其他</option>
+          </select>
+        </div>
       </div>
 
-      <div class="group">
-        <label>备注</label>
-        <input id="remark" placeholder="如：下午两点后方便" />
+      <!-- 标题 -->
+      <div class="row">
+        <div class="form-group">
+          <label>问题标题<span class="req">*</span></label>
+          <input id="title" type="text" placeholder="例如：打印机无法打印" />
+          <div class="hint">4~20 个字</div>
+        </div>
       </div>
-    </div>
 
-    <div class="actions">
-      <button id="submitBtn" class="primary" onclick="submitTicket()">提交工单</button>
-      <button class="secondary" onclick="resetForm()">清空重填</button>
-    </div>
+      <!-- 描述 -->
+      <div class="row">
+        <div class="form-group">
+          <label>问题描述<span class="req">*</span></label>
+          <textarea id="description" placeholder="请描述问题现象、出现时间等"></textarea>
+        </div>
+      </div>
 
-    <footer>© IT 运维系统 · 内部使用</footer>
+      <!-- 联系方式 + 位置 -->
+      <div class="row">
+        <div class="form-group">
+          <label>联系方式<span class="req">*</span></label>
+          <input id="contact" type="text" placeholder="内线 / 手机 / 姓名" />
+        </div>
+
+        <div class="form-group">
+          <label>具体位置<span class="req">*</span></label>
+          <input id="position" type="text" placeholder="如：2楼护士站" />
+          <div class="hint">4~20 个字</div>
+        </div>
+      </div>
+
+      <!-- 备注 -->
+      <div class="row">
+        <div class="form-group">
+          <label>备注</label>
+          <input id="remark" type="text" placeholder="如：下午两点后方便" />
+        </div>
+      </div>
+
+      <!-- 按钮 -->
+      <div class="actions">
+        <button id="btnSubmit" type="submit">提交工单</button>
+        <button type="reset" class="btn-reset">清空重填</button>
+      </div>
+
+    </form>
+
+    <div class="footer">
+      内部使用 · IT 运维支持系统
+    </div>
   </div>
 
-  <!-- JS -->
+  <!-- 只加载 repair.js -->
   <script src="./repair.js"></script>
+
 </body>
 </html>
