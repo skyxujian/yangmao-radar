@@ -118,7 +118,6 @@ function loadDepartments() {
       btn.disabled = false;
       btn.textContent = '提交工单';
     });
-}
 
 /**********************
  * 工具函数
