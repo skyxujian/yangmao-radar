@@ -48,10 +48,47 @@ function loadDepartments() {
  * 提交工单
  **********************/
 function submitTicket(event) {
- const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = '提交中…';
+ function submitTicket() {
+  const btn = document.getElementById('submitBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = '提交中...';
+  }
 
+  const data = {
+    department: document.getElementById('department')?.value || '',
+    type: document.getElementById('type')?.value || '',
+    title: document.getElementById('title')?.value || '',
+    description: document.getElementById('description')?.value || '',
+    contact: document.getElementById('contact')?.value || '',
+    remark: document.getElementById('remark')?.value || ''
+  };
+
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+    .then(res => res.json())
+    .then(resp => {
+      if (resp.ok) {
+        alert('提交成功，工单已生成');
+        document.getElementById('repairForm')?.reset();
+      } else {
+        alert('提交失败：' + (resp.error || '未知错误'));
+      }
+    })
+    .catch(err => {
+      alert('提交失败：网络或接口异常');
+      console.error(err);
+    })
+    .finally(() => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = '提交工单';
+      }
+    });
+}
   const payload = {
     department: getValue('department'),
     type: getValue('type'),
