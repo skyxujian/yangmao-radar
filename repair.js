@@ -42,7 +42,9 @@ function loadDepartments() {
  * 提交工单
  **********************/
 function submitTicket(event) {
+  if (event && event.preventDefault) {
   event.preventDefault();
+}
 
   const btn = event.target;
   btn.disabled = true;
