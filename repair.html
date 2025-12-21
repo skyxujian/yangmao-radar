@@ -1,251 +1,260 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<title>IT 运维支持系统</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" />
+  <title>IT 运维支持系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<style>
-body {
-  background: #f4f7fb;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
-}
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  background: #fff;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.08);
-}
-h1 {
-  margin: 0;
-}
-.sub {
-  color: #666;
-  margin-bottom: 20px;
-}
-.row {
-  display: flex;
-  gap: 20px;
-}
-.form-group {
-  margin-bottom: 16px;
-  flex: 1;
-}
-label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 6px;
-}
-input, select, textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid #dcdcdc;
-}
-textarea {
-  resize: vertical;
-}
-.actions {
-  margin-top: 20px;
-}
-button {
-  padding: 12px 28px;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-}
-.btn-primary {
-  background: #3f6cf4;
-  color: #fff;
-}
-.btn-secondary {
-  background: #eee;
-}
-.alert {
-  background: #fff4f4;
-  color: #b40000;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-}
-footer {
-  text-align: center;
-  color: #999;
-  margin-top: 30px;
-}
-</style>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f6f7f9;
+      margin: 0;
+      padding: 24px;
+    }
+
+    .card {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 36px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin: 16px 0 6px;
+    }
+
+    select, input, textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .row > div {
+      flex: 1;
+    }
+
+    button {
+      margin-top: 24px;
+      padding: 14px 24px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: #2563eb;
+      color: #fff;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .error {
+      background: #fdecec;
+      color: #b91c1c;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .success {
+      background: #ecfdf5;
+      color: #047857;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 16px;
+      display: none;
+    }
+
+    footer {
+      margin-top: 32px;
+      text-align: center;
+      color: #999;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="card">
+    <h1>IT 运维支持系统</h1>
+    <div class="subtitle">内部报修入口 · 提交后自动生成工单</div>
 
-<div class="container">
-  <h1>IT 运维支持系统</h1>
-  <div class="sub">内部报修入口 · 提交后自动生成工单</div>
-
-  <div id="alert" class="alert" style="display:none"></div>
-
-  <form id="repairForm">
-
-    <div class="row">
-      <div class="form-group">
-        <label>报修部门 *</label>
-        <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbxo8959wtz4dU-WsA2x2vr8WTwTbp77ryM_cqXdihT263PP3qpREjcaROOtbH7wbMOHbQ/exec';
-
-document.addEventListener('DOMContentLoaded', () => {
-  const select = document.getElementById('department');
-
-  fetch(API_URL + '?action=getDepartments')
-    .then(res => res.json())
-    .then(json => {
-      if (!json.ok || !Array.isArray(json.data)) {
-        throw new Error('API 返回异常');
-      }
-
-      // 清空“加载中…”
-      select.innerHTML = '<option value="">请选择科室</option>';
-
-      json.data.forEach(name => {
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        select.appendChild(opt);
-      });
-    })
-    .catch(err => {
-      console.error(err);
-      select.innerHTML = '<option value="">无法加载科室</option>';
-      alert('无法加载部门列表，请联系 IT');
-    });
-});
-</script>
-
-        <select id="department" required>
-          <option value="">加载中…</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>问题类型 *</label>
-        <select id="type" required>
-          <option value="">请选择</option>
-          <option>系统</option>
-          <option>网络</option>
-          <option>硬件</option>
-          <option>账号权限</option>
-          <option>其他</option>
-        </select>
-      </div>
+    <div id="deptError" class="error">
+      无法加载部门列表，请联系 IT
     </div>
 
-    <div class="form-group">
+    <form id="repairForm">
+      <div class="row">
+        <div>
+          <label>报修部门 *</label>
+          <select id="department" required>
+            <option value="">加载中…</option>
+          </select>
+        </div>
+
+        <div>
+          <label>问题类型 *</label>
+          <select id="type" required>
+            <option value="">请选择</option>
+            <option>网络问题</option>
+            <option>电脑故障</option>
+            <option>系统登录</option>
+            <option>打印机</option>
+            <option>其他</option>
+          </select>
+        </div>
+      </div>
+
       <label>问题标题 *</label>
-      <input id="title" required placeholder="简要描述问题" />
-    </div>
+      <input id="title" placeholder="简要描述问题" required />
 
-    <div class="form-group">
       <label>问题描述 *</label>
-      <textarea id="description" rows="4" required placeholder="请详细描述问题现象"></textarea>
-    </div>
+      <textarea id="description" placeholder="请详细描述问题现象" required></textarea>
 
-    <div class="row">
-      <div class="form-group">
-        <label>联系方式 *</label>
-        <input id="contact" required placeholder="姓名 / 电话 / 微信" />
+      <div class="row">
+        <div>
+          <label>联系方式 *</label>
+          <input id="contact" placeholder="姓名 / 电话 / 内线" required />
+        </div>
+        <div>
+          <label>备注</label>
+          <input id="remark" placeholder="如：下午两点后方便" />
+        </div>
       </div>
 
-      <div class="form-group">
-        <label>具体位置 *</label>
-        <input id="location" required placeholder="如：3楼护士站" />
-      </div>
-    </div>
+      <button type="submit" id="submitBtn">提交工单</button>
+    </form>
 
-    <div class="form-group">
-      <label>备注</label>
-      <input id="remark" placeholder="如：下午两点后方便" />
-    </div>
+    <div id="resultBox" class="success"></div>
 
-    <div class="actions">
-      <button id="submitBtn" class="btn-primary" type="submit">提交工单</button>
-      <button type="reset" class="btn-secondary">清空重填</button>
-    </div>
-  </form>
+    <footer>© IT 运维系统 · 内部使用</footer>
+  </div>
 
-  <footer>© IT 运维系统 · 内部使用</footer>
-</div>
+  <!-- ================= JS ================= -->
+  <script>
+    /**********************
+     * 必改：你的 API 地址
+     **********************/
+    const API_URL =
+      'https://script.google.com/macros/s/AKfycbxo8959wtz4dU-WsA2x2vr8WTwTbp77ryM_cqXdihT263PP3qpREjcaROOtbH7wbMOHbQ/exec';
 
-<script>
-const alertBox = document.getElementById("alert");
-const submitBtn = document.getElementById("submitBtn");
+    /**********************
+     * 页面初始化
+     **********************/
+    document.addEventListener('DOMContentLoaded', function () {
+      loadDepartments();
 
-function showAlert(msg) {
-  alertBox.innerText = msg;
-  alertBox.style.display = "block";
-}
-
-async function loadDepartments() {
-  try {
-    const res = await fetch(API_URL + "?action=departments");
-    const data = await res.json();
-    const sel = document.getElementById("department");
-    sel.innerHTML = '<option value="">请选择部门</option>';
-    data.forEach(d => {
-      const opt = document.createElement("option");
-      opt.value = d;
-      opt.textContent = d;
-      sel.appendChild(opt);
+      const form = document.getElementById('repairForm');
+      form.addEventListener('submit', submitTicket);
     });
-  } catch {
-    showAlert("无法加载部门列表，请联系 IT");
-  }
-}
 
-document.getElementById("repairForm").addEventListener("submit", async e => {
-  e.preventDefault();
+    /**********************
+     * 加载部门
+     **********************/
+    function loadDepartments() {
+      const select = document.getElementById('department');
+      const errorBox = document.getElementById('deptError');
 
-  const location = document.getElementById("location").value.trim();
-  if (location.length < 4 || location.length > 20) {
-    showAlert("具体位置需 4–20 个字");
-    return;
-  }
+      fetch(API_URL + '?action=getDepartments')
+        .then(res => res.json())
+        .then(data => {
+          if (!data || !data.ok || !Array.isArray(data.data)) {
+            throw new Error('invalid data');
+          }
 
-  submitBtn.disabled = true;
-  submitBtn.innerText = "提交中…";
+          select.innerHTML = '<option value="">请选择科室</option>';
 
-  const payload = {
-    department: department.value,
-    type: type.value,
-    title: title.value,
-    description: description.value,
-    contact: contact.value,
-    location,
-    remark: remark.value
-  };
+          data.data.forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            select.appendChild(opt);
+          });
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify(payload)
-    });
-    const r = await res.json();
-    if (r.ok) {
-      alert("提交成功 ✅ 工单已生成");
-      e.target.reset();
-    } else {
-      throw new Error();
+          errorBox.style.display = 'none';
+        })
+        .catch(err => {
+          console.error(err);
+          select.innerHTML = '<option value="">无法加载科室</option>';
+          errorBox.style.display = 'block';
+        });
     }
-  } catch {
-    showAlert("提交失败（网络或权限问题）");
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.innerText = "提交工单";
-  }
-});
 
-loadDepartments();
-</script>
+    /**********************
+     * 提交工单（防呆）
+     **********************/
+    function submitTicket(e) {
+      if (e) e.preventDefault();
 
+      const btn = document.getElementById('submitBtn');
+      const resultBox = document.getElementById('resultBox');
+
+      btn.disabled = true;
+      resultBox.style.display = 'none';
+
+      const payload = {
+        department: document.getElementById('department').value,
+        type: document.getElementById('type').value,
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        contact: document.getElementById('contact').value,
+        remark: document.getElementById('remark').value
+      };
+
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (!data || !data.ok) {
+            throw new Error('submit failed');
+          }
+
+          resultBox.textContent = '✅ 工单提交成功，编号：' + data.id;
+          resultBox.style.display = 'block';
+          document.getElementById('repairForm').reset();
+        })
+        .catch(err => {
+          alert('提交失败，请稍后重试或联系 IT');
+          console.error(err);
+        })
+        .finally(() => {
+          btn.disabled = false;
+        });
+    }
+  </script>
 </body>
 </html>
