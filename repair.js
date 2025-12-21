@@ -43,9 +43,18 @@ function loadDepartments() {
  **********************/
 function submitTicket(event) {
   if (event && event.preventDefault) {
-  event.preventDefault();
-}
+    event.preventDefault();
+  }
 
+  const btn = event && event.target
+    ? event.target
+    : document.querySelector('button[onclick*="submitTicket"]');
+
+  btn.disabled = true;
+  btn.textContent = '提交中…';
+
+  // 后面代码不动
+}
   const btn = event.target;
   btn.disabled = true;
   btn.textContent = '提交中…';
