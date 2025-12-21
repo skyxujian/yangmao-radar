@@ -48,9 +48,7 @@ function loadDepartments() {
  * 提交工单
  **********************/
 function submitTicket(event) {
-  event.preventDefault();
-
-  const btn = event.target;
+ const btn = event.target;
   btn.disabled = true;
   btn.textContent = '提交中…';
 
