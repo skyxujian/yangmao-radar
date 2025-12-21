@@ -42,9 +42,63 @@ function loadDepartments() {
  * 提交工单
  **********************/
 function submitTicket(event) {
+  // 1️⃣ 防止 event 不存在直接炸
   if (event && event.preventDefault) {
     event.preventDefault();
   }
+
+  // 2️⃣ 防止 event.target 不存在
+  let btn = null;
+  if (event && event.target) {
+    btn = event.target;
+  } else {
+    // 兜底：找提交按钮本身
+    btn = document.querySelector('button[onclick*="submitTicket"]');
+  }
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '提交中…';
+  }
+
+  // 3️⃣ 采集表单数据（示例）
+  const department = document.getElementById('department')?.value || '';
+  const type        = document.getElementById('type')?.value || '';
+  const title       = document.getElementById('title')?.value || '';
+  const description = document.getElementById('description')?.value || '';
+  const contact     = document.getElementById('contact')?.value || '';
+
+  fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      department,
+      type,
+      title,
+      description,
+      contact
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        alert('✅ 工单提交成功，编号：' + data.id);
+        location.reload();
+      } else {
+        alert('❌ 提交失败：' + (data.error || '未知错误'));
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert('❌ 网络或服务器错误');
+    })
+    .finally(() => {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '提交工单';
+      }
+    });
+}
 
   const btn = event && event.target
     ? event.target
