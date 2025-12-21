@@ -47,7 +47,7 @@ function loadDepartments() {
 /**********************
  * 提交工单
  **********************/
-function submitTicket(event) {
+
  function submitTicket() {
   const btn = document.getElementById('submitBtn');
   if (btn) {
