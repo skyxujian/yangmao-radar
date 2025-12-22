@@ -110,10 +110,12 @@
     <h1>IT 运维支持系统</h1>
     <div class="subtitle">内部报修入口 · 提交后自动生成工单</div>
 
+    <!-- 加载部门失败提示 -->
     <div id="deptError" class="error">
       无法加载部门列表，请联系 IT
     </div>
 
+    <!-- 表单 -->
     <form id="repairForm">
       <div class="row">
         <div>
@@ -127,11 +129,11 @@
           <label>问题类型 *</label>
           <select id="type" required>
             <option value="">请选择</option>
-            <option>网络问题</option>
-            <option>电脑故障</option>
-            <option>系统登录</option>
-            <option>打印机</option>
-            <option>其他</option>
+            <option value="网络问题">网络问题</option>
+            <option value="电脑故障">电脑故障</option>
+            <option value="系统登录">系统登录</option>
+            <option value="打印机">打印机</option>
+            <option value="其他">其他</option>
           </select>
         </div>
       </div>
@@ -140,7 +142,11 @@
       <input id="title" placeholder="简要描述问题" required />
 
       <label>问题描述 *</label>
-      <textarea id="description" placeholder="请详细描述问题现象" required></textarea>
+      <textarea
+        id="description"
+        placeholder="请详细描述问题现象"
+        required
+      ></textarea>
 
       <div class="row">
         <div>
@@ -153,108 +159,17 @@
         </div>
       </div>
 
+      <!-- 提交按钮：只保留 type=submit -->
       <button type="submit" id="submitBtn">提交工单</button>
     </form>
 
+    <!-- 提交结果 -->
     <div id="resultBox" class="success"></div>
 
     <footer>© IT 运维系统 · 内部使用</footer>
   </div>
 
-  <!-- ================= JS ================= -->
-  <script>
-    /**********************
-     * 必改：你的 API 地址
-     **********************/
-    const API_URL =
-      'https://script.google.com/macros/s/AKfycbxo8959wtz4dU-WsA2x2vr8WTwTbp77ryM_cqXdihT263PP3qpREjcaROOtbH7wbMOHbQ/exec';
-
-    /**********************
-     * 页面初始化
-     **********************/
-    document.addEventListener('DOMContentLoaded', function () {
-      loadDepartments();
-
-      const form = document.getElementById('repairForm');
-      form.addEventListener('submit', submitTicket);
-    });
-
-    /**********************
-     * 加载部门
-     **********************/
-    function loadDepartments() {
-      const select = document.getElementById('department');
-      const errorBox = document.getElementById('deptError');
-
-      fetch(API_URL + '?action=getDepartments')
-        .then(res => res.json())
-        .then(data => {
-          if (!data || !data.ok || !Array.isArray(data.data)) {
-            throw new Error('invalid data');
-          }
-
-          select.innerHTML = '<option value="">请选择科室</option>';
-
-          data.data.forEach(name => {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            select.appendChild(opt);
-          });
-
-          errorBox.style.display = 'none';
-        })
-        .catch(err => {
-          console.error(err);
-          select.innerHTML = '<option value="">无法加载科室</option>';
-          errorBox.style.display = 'block';
-        });
-    }
-
-    /**********************
-     * 提交工单（防呆）
-     **********************/
-    function submitTicket(e) {
-      if (e) e.preventDefault();
-
-      const btn = document.getElementById('submitBtn');
-      const resultBox = document.getElementById('resultBox');
-
-      btn.disabled = true;
-      resultBox.style.display = 'none';
-
-      const payload = {
-        department: document.getElementById('department').value,
-        type: document.getElementById('type').value,
-        title: document.getElementById('title').value,
-        description: document.getElementById('description').value,
-        contact: document.getElementById('contact').value,
-        remark: document.getElementById('remark').value
-      };
-
-      fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (!data || !data.ok) {
-            throw new Error('submit failed');
-          }
-
-          resultBox.textContent = '✅ 工单提交成功，编号：' + data.id;
-          resultBox.style.display = 'block';
-          document.getElementById('repairForm').reset();
-        })
-        .catch(err => {
-          alert('提交失败，请稍后重试或联系 IT');
-          console.error(err);
-        })
-        .finally(() => {
-          btn.disabled = false;
-        });
-    }
-  </script>
+  <!-- JS：只加载 repair.js，不写内联逻辑 -->
+  <script src="./repair.js"></script>
 </body>
 </html>
