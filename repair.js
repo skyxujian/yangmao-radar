@@ -1,11 +1,17 @@
 /**********************
- * 稳定加强版 repair.js
- * 原则：不信任 DOM，不信任后端
+ * repair.js - 最终稳定版
+ * 原则：
+ * 1. submit 可被任何方式调用
+ * 2. event 不存在也不报错
+ * 3. DOM 不存在直接忽略
  **********************/
 
 const API_URL =
   'https://script.google.com/macros/s/AKfycbxo8959wtz4dU-WsA2x2vr8WTwTbp77ryM_cqXdihT263PP3qpREjcaROOtbH7wbMOHbQ/exec';
 
+/**********************
+ * 页面初始化
+ **********************/
 document.addEventListener('DOMContentLoaded', () => {
   loadDepartments();
 
@@ -18,33 +24,34 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**********************
- * 加载科室
+ * 加载部门列表
  **********************/
+let loadingDept = false;
+
 function loadDepartments() {
+  if (loadingDept) return;
+  loadingDept = true;
+
   const select = document.getElementById('department');
   const errorBox = document.getElementById('deptError');
 
   if (!select) {
-    console.warn('department select not found');
+    loadingDept = false;
     return;
   }
 
-  fetch(API_URL + '?action=getDepartments')
+  fetch(API_URL + '?action=getDepartments&t=' + Date.now())
     .then(res => res.json())
     .then(json => {
-      const list = json?.data || json?.departments || [];
+      const list = Array.isArray(json?.data) ? json.data : [];
 
-      if (!Array.isArray(list)) {
-        throw new Error('invalid department data');
+      if (list.length === 0) {
+        throw new Error('empty department list');
       }
-
-      const cleanList = list
-        .map(v => String(v).trim())
-        .filter(v => v.length > 0);
 
       select.innerHTML = '<option value="">请选择科室</option>';
 
-      cleanList.forEach(name => {
+      list.forEach(name => {
         const opt = document.createElement('option');
         opt.value = name;
         opt.textContent = name;
@@ -55,25 +62,33 @@ function loadDepartments() {
     })
     .catch(err => {
       console.error(err);
-      select.innerHTML = '<option value="">无法加载科室</option>';
+      if (select.options.length === 0) {
+        select.innerHTML = '<option value="">无法加载科室</option>';
+      }
       if (errorBox) errorBox.style.display = 'block';
+    })
+    .finally(() => {
+      loadingDept = false;
     });
 }
 
 /**********************
- * 提交工单（唯一入口）
+ * 提交工单（核心）
  **********************/
 function submitTicket(e) {
-  e.preventDefault();
+  // ✅ 关键修复：event 可有可无
+  if (e && typeof e.preventDefault === 'function') {
+    e.preventDefault();
+  }
 
   const btn = document.getElementById('submitBtn');
   const resultBox = document.getElementById('resultBox');
+  const form = document.getElementById('repairForm');
 
   if (btn) {
     btn.disabled = true;
     btn.textContent = '提交中…';
   }
-
   if (resultBox) {
     resultBox.style.display = 'none';
   }
@@ -112,11 +127,10 @@ function submitTicket(e) {
 
       if (resultBox) {
         resultBox.textContent =
-          '✅ 工单提交成功，编号：' + (json.id || '');
+          '✅ 工单提交成功，编号：' + (json.data?.id || '');
         resultBox.style.display = 'block';
       }
 
-      const form = document.getElementById('repairForm');
       if (form) form.reset();
     })
     .catch(err => {
@@ -129,7 +143,7 @@ function submitTicket(e) {
 }
 
 /**********************
- * 工具
+ * 工具函数
  **********************/
 function valueOf(id) {
   const el = document.getElementById(id);
