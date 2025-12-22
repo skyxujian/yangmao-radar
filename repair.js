@@ -13,14 +13,17 @@ const API_URL =
  * 页面初始化
  **********************/
 document.addEventListener('DOMContentLoaded', () => {
-  loadDepartments();
+ function loadDepartments() {
+  const select = document.getElementById('department');
+  if (!select) return;
 
-  const form = document.getElementById('repairForm');
-  if (form) {
-    form.addEventListener('submit', submitTicket);
-  } else {
-    console.warn('repairForm not found');
-  }
+  select.innerHTML = `
+    <option value="">请选择科室</option>
+    <option value="IT部">IT部</option>
+    <option value="行政部">行政部</option>
+    <option value="财务部">财务部</option>
+  `;
+}
 });
 
 /**********************
