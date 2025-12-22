@@ -130,7 +130,7 @@ function submitTicket(e) {
 
       if (resultBox) {
         resultBox.textContent =
-          '✅ 工单提交成功，编号：' + (json.data?.id || '');
+          '✅ 工单提交成功，编号：' + (json.data.id || '');
         resultBox.style.display = 'block';
       }
 
