@@ -7,7 +7,7 @@
  **********************/
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbxo8959wtz4dU-WsA2x2vr8WTwTbp77ryM_cqXdihT263PP3qpREjcaROOtbH7wbMOHbQ/exec';
+  'https://calm-mountain-16aa.skyxujian09102.workers.dev';
 
 /**********************
  * 页面初始化
