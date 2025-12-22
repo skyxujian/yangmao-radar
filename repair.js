@@ -1,9 +1,5 @@
 /**********************
- * repair.js - 最终稳定版
- * 原则：
- * 1. submit 可被任何方式调用
- * 2. event 不存在也不报错
- * 3. DOM 不存在直接忽略
+ * repair.js - 最终稳定版（已验证）
  **********************/
 
 const API_URL =
@@ -13,8 +9,23 @@ const API_URL =
  * 页面初始化
  **********************/
 document.addEventListener('DOMContentLoaded', () => {
- function loadDepartments() {
+  // 1️⃣ 加载部门（写死版，保证稳定）
+  loadDepartments();
+
+  // 2️⃣ 绑定提交事件
+  const form = document.getElementById('repairForm');
+  if (form) {
+    form.addEventListener('submit', submitTicket);
+  }
+});
+
+/**********************
+ * 部门列表（稳定写死）
+ **********************/
+function loadDepartments() {
   const select = document.getElementById('department');
+  const errorBox = document.getElementById('deptError');
+
   if (!select) return;
 
   select.innerHTML = `
@@ -23,63 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
     <option value="行政部">行政部</option>
     <option value="财务部">财务部</option>
   `;
-}
-});
 
-/**********************
- * 加载部门列表
- **********************/
-let loadingDept = false;
-
-function loadDepartments() {
-  if (loadingDept) return;
-  loadingDept = true;
-
-  const select = document.getElementById('department');
-  const errorBox = document.getElementById('deptError');
-
-  if (!select) {
-    loadingDept = false;
-    return;
-  }
-
-  fetch(API_URL + '?action=getDepartments&t=' + Date.now())
-    .then(res => res.json())
-    .then(json => {
-      const list = Array.isArray(json?.data) ? json.data : [];
-
-      if (list.length === 0) {
-        throw new Error('empty department list');
-      }
-
-      select.innerHTML = '<option value="">请选择科室</option>';
-
-      list.forEach(name => {
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        select.appendChild(opt);
-      });
-
-      if (errorBox) errorBox.style.display = 'none';
-    })
-    .catch(err => {
-      console.error(err);
-      if (select.options.length === 0) {
-        select.innerHTML = '<option value="">无法加载科室</option>';
-      }
-      if (errorBox) errorBox.style.display = 'block';
-    })
-    .finally(() => {
-      loadingDept = false;
-    });
+  if (errorBox) errorBox.style.display = 'none';
 }
 
 /**********************
- * 提交工单（核心）
+ * 提交工单
  **********************/
 function submitTicket(e) {
-  // ✅ 关键修复：event 可有可无
   if (e && typeof e.preventDefault === 'function') {
     e.preventDefault();
   }
@@ -124,13 +86,17 @@ function submitTicket(e) {
   })
     .then(res => res.json())
     .then(json => {
-      if (json.success !== true) {
-        throw new Error(json.message || '提交失败');
+      console.log('提交返回：', json);
+
+      if (!json || json.success !== true) {
+        throw new Error(json?.message || '提交失败');
       }
+
+      const id = json.data?.id || '未知';
 
       if (resultBox) {
         resultBox.textContent =
-          '✅ 工单提交成功，编号：' + (json.data.id || '');
+          '✅ 工单提交成功，编号：' + id;
         resultBox.style.display = 'block';
       }
 
