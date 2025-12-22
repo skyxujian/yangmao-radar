@@ -108,7 +108,7 @@ function submitTicket(event) {
   btn.textContent = '提交中…';
 
   // 后面代码不动
-}
+
   const btn = event.target;
   btn.disabled = true;
   btn.textContent = '提交中…';
