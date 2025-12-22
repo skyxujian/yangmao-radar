@@ -1,6 +1,6 @@
 /**********************
- * 稳定版 repair.js
- * 原则：单入口、单提交、写死协议
+ * 稳定加强版 repair.js
+ * 原则：不信任 DOM，不信任后端
  **********************/
 
 const API_URL =
@@ -8,9 +8,13 @@ const API_URL =
 
 document.addEventListener('DOMContentLoaded', () => {
   loadDepartments();
-  document
-    .getElementById('repairForm')
-    .addEventListener('submit', submitTicket);
+
+  const form = document.getElementById('repairForm');
+  if (form) {
+    form.addEventListener('submit', submitTicket);
+  } else {
+    console.warn('repairForm not found');
+  }
 });
 
 /**********************
@@ -20,31 +24,39 @@ function loadDepartments() {
   const select = document.getElementById('department');
   const errorBox = document.getElementById('deptError');
 
+  if (!select) {
+    console.warn('department select not found');
+    return;
+  }
+
   fetch(API_URL + '?action=getDepartments')
     .then(res => res.json())
     .then(json => {
-      if (json.success !== true || !Array.isArray(json.data)) {
+      const list = json?.data || json?.departments || [];
+
+      if (!Array.isArray(list)) {
         throw new Error('invalid department data');
       }
 
-      const list = json.data
+      const cleanList = list
         .map(v => String(v).trim())
         .filter(v => v.length > 0);
 
       select.innerHTML = '<option value="">请选择科室</option>';
-      list.forEach(name => {
+
+      cleanList.forEach(name => {
         const opt = document.createElement('option');
         opt.value = name;
         opt.textContent = name;
         select.appendChild(opt);
       });
 
-      errorBox.style.display = 'none';
+      if (errorBox) errorBox.style.display = 'none';
     })
     .catch(err => {
       console.error(err);
       select.innerHTML = '<option value="">无法加载科室</option>';
-      errorBox.style.display = 'block';
+      if (errorBox) errorBox.style.display = 'block';
     });
 }
 
@@ -57,9 +69,14 @@ function submitTicket(e) {
   const btn = document.getElementById('submitBtn');
   const resultBox = document.getElementById('resultBox');
 
-  btn.disabled = true;
-  btn.textContent = '提交中…';
-  resultBox.style.display = 'none';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '提交中…';
+  }
+
+  if (resultBox) {
+    resultBox.style.display = 'none';
+  }
 
   const payload = {
     department: valueOf('department'),
@@ -70,7 +87,6 @@ function submitTicket(e) {
     remark: valueOf('remark')
   };
 
-  // 前端强校验（防呆）
   if (!payload.department || !payload.type) {
     alert('请完整填写必填项');
     resetBtn(btn);
@@ -94,10 +110,14 @@ function submitTicket(e) {
         throw new Error(json.message || '提交失败');
       }
 
-      resultBox.textContent =
-        '✅ 工单提交成功，编号：' + (json.id || '');
-      resultBox.style.display = 'block';
-      document.getElementById('repairForm').reset();
+      if (resultBox) {
+        resultBox.textContent =
+          '✅ 工单提交成功，编号：' + (json.id || '');
+        resultBox.style.display = 'block';
+      }
+
+      const form = document.getElementById('repairForm');
+      if (form) form.reset();
     })
     .catch(err => {
       console.error(err);
@@ -113,10 +133,11 @@ function submitTicket(e) {
  **********************/
 function valueOf(id) {
   const el = document.getElementById(id);
-  return el ? el.value.trim() : '';
+  return el && el.value ? el.value.trim() : '';
 }
 
 function resetBtn(btn) {
+  if (!btn) return;
   btn.disabled = false;
   btn.textContent = '提交工单';
 }
