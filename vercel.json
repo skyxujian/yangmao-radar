@@ -2,7 +2,17 @@
   "redirects": [
     {
       "source": "/",
-      "destination": "/repair",
+      "destination": "/repair.html",
+      "permanent": false
+    },
+    {
+      "source": "/repair",
+      "destination": "/repair.html",
+      "permanent": false
+    },
+    {
+      "source": "/repair/",
+      "destination": "/repair.html",
       "permanent": false
     }
   ]
