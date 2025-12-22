@@ -98,20 +98,16 @@ function submitTicket(event) {
         btn.textContent = '提交工单';
       }
     });
+// ===== 提交按钮处理（防呆）=====
+const btn = event && event.target
+  ? event.target
+  : document.querySelector('button[onclick="submitTicket"]');
+
+if (btn) {
+  btn.disabled = true;
+  btn.textContent = '提交中...';
 }
 
-  const btn = event && event.target
-    ? event.target
-    : document.querySelector('button[onclick*="submitTicket"]');
-
-  btn.disabled = true;
-  btn.textContent = '提交中…';
-
-  // 后面代码不动
-
-  const btn = event.target;
-  btn.disabled = true;
-  btn.textContent = '提交中…';
 
   const data = {
     department: valueOf('department'),
